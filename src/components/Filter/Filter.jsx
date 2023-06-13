@@ -1,32 +1,28 @@
-import { string, func } from 'prop-types'
-
 import { StyledFilter } from './s-filter';
+import { useDispatch, useSelector } from 'react-redux';
+import { getFilter } from 'redux/selectors';
+import { filterContacts } from 'redux/slice';
+
 import { StyledTitle } from 'components/styled-common';
 import { StyledFlexColumn } from 'components/styled-common';
 
-const Filter = (props) => {
-
-    const {
-        value,
-        onFilter
-    } = props;
-
+const Filter = () => {
+    const filterValue = useSelector(getFilter);
+    const dispatch = useDispatch();
+    
+    const handleFilterInput = (e) => {
+        dispatch(filterContacts(e.currentTarget.value));
+    };
     return (
         <StyledFlexColumn>
-            <StyledTitle>Search contacts for: { value }</StyledTitle>
+            <StyledTitle>Search contacts for: {filterValue}</StyledTitle>
             <StyledFilter
                 type="text"
-                value={value}
-                placeholder="search by name or number"
-                onChange={onFilter}
+                value={filterValue}
+                placeholder="search by name"
+                onChange={handleFilterInput}
             />
         </StyledFlexColumn>
     );
 };
-
-Filter.propTypes = {
-    value: string.isRequired,
-    onFilter: func.isRequired
-}
-
-export {Filter}
+export default Filter;

@@ -1,42 +1,71 @@
-import { func } from 'prop-types'
 import { useState } from "react"
 import { nanoid } from 'nanoid';
 import { Notify } from 'notiflix';
 
+import { addContact, filterContacts } from 'redux/slice';
 /* styled components*/
 import { SVG } from 'components/Icons/Icons'; 
 import { StyledButton } from 'components/Button/s-button.js';
 import { StyledForm, StyledInput } from './s-contact-form';
 import { StyledFlexColumn, StyledFlex } from 'components/styled-common';
 import { StyledTitle } from 'components/styled-common';
+import { getContactInfo, getFilter } from 'redux/selectors';
+import { useDispatch, useSelector } from 'react-redux';
 
 
 
 
-export const ContactForm = ({ onAdd }) => {
-    const [contactData, setContactData] = useState({ contactName: '', contactTel: '' });
+const ContactForm = () => {
+    const [name, setName] = useState('');
+    const [number, setNumber] = useState('');
+   
+    const contacts = useSelector(getContactInfo);
+    const filterValue = useSelector(getFilter);
+    const dispatch = useDispatch();
 
-    // click event handlers input changes and for submit
-    const handleChangeInput = e => {
-        const { name, value } = e.target;
-       
-
-        setContactData(prev => {
-            return { ...prev, [name]: value,}
-        })
+    //handler to add data to store
+    const handleContactData = () => {
+        const data = { id: nanoid(6), name: name, number: number };
+        dispatch(addContact(data));
+        if (filterValue !== " ") {
+            dispatch(filterContacts(''));
+        }
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const data = ({ id: nanoid(6), name: contactData.contactName, number: contactData.contactTel });
-        onAdd(data);
-        Notify.success(`Got it, ${contactData.contactName} has been added to your phone book.`)
+        if (contacts.find(contact => contact.name.toLowerCase() === name.toLowerCase())) {
+            if (filterValue !== '') {
+                dispatch(filterContacts(''));
+            };
+            return Notify.info(` Eeep, ${name} is already a contact. Please use a unique name.`)
+        }
+        handleContactData();
+        Notify.success(`Got it, ${name} has been added to your phone book.`)
         formReset();
     }
+    const handleChangeInput = (e) => {
+        const { name, value } = e.currentTarget;
+
+        switch (name) {
+            case 'name':
+                setName(value);
+                break;
+            
+            case 'number': {
+                setNumber(value);
+                break;
+            }
+            default:
+                return;
+        };
+        
+    };
     
 // helper functions  
     const formReset = () => {
-        setContactData({ contactName: '', contactTel: '' })
+        setName('');
+        setNumber('');
     };
 
     // const isNameValid = (name) => {
@@ -72,27 +101,27 @@ export const ContactForm = ({ onAdd }) => {
                         <label id="name">   
                             <StyledInput
                                type="text"
-                                name="contactName"
+                                name='name'
                                 pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
                                 title="Name must contain minimum 1, maximum 30 characters. In this case characters include Upper and lowercase letters, apostrophe with following letter, and a max of two spaces between characters. For example: Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
                                 placeholder="contact name"
                                 required
                                 autoFocus={true}
                                 onChange={handleChangeInput}
-                                value={contactData.contactName} 
+                                value={name} 
                                 maxLength="30"
                             />
                         </label>
                         <label id="tel">
                             <StyledInput
                                 type="tel"
-                                name="contactTel"
+                                name='number'
                                 pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
                                 title="Phone number must be at least 6 digits max 19 digits. In this case digits include single spaces between numbers, dashes, parentheses and number can start with +"
                                 required
                                 placeholder="contact telephone"
                                 onChange={handleChangeInput}
-                                value={contactData.contactTel}
+                                value={number}
                                 maxLength="19"
                             />
                         </label>
@@ -103,6 +132,4 @@ export const ContactForm = ({ onAdd }) => {
     );
 };
 
-ContactForm.propTypes = {
-  onAdd: func.isRequired,
-};
+export default ContactForm;
