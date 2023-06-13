@@ -1,8 +1,6 @@
 /* Libraries */
 import { useSelector } from 'react-redux';
-//import { Notify } from 'notiflix';
 /* Local JS*/
-//import { useLocalStorage } from "../utils/LocalStorage/local-storage.js";
 import { getContactInfo } from 'redux/selectors.js';
 /* Components */ 
 import ContactForm from './ContactForm/ContactForm.jsx'
@@ -20,9 +18,6 @@ import {
 
 export const App = () => {
   const contacts = useSelector(getContactInfo);
-// define states add local storage hook to save contacts to local environment
-  // const [contacts, setContacts] = useLocalStorage('contacts', []);
-  // const [filter, setFilter] = useState('');
 
 // normalize filter and look for matching name in contacts  
   // const searchContact = () => {
