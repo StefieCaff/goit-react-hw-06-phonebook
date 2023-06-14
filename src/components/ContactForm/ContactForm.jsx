@@ -102,7 +102,7 @@ const ContactForm = () => {
                             <StyledInput
                                type="text"
                                 name='name'
-                                pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+                                pattern="[A-Za-z\- ]{1,30}"
                                 title="Name must contain minimum 1, maximum 30 characters. In this case characters include Upper and lowercase letters, apostrophe with following letter, and a max of two spaces between characters. For example: Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
                                 placeholder="contact name"
                                 required
@@ -116,7 +116,7 @@ const ContactForm = () => {
                             <StyledInput
                                 type="tel"
                                 name='number'
-                                pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
+                                pattern="[0-9\s+\-]{6,19}"
                                 title="Phone number must be at least 6 digits max 19 digits. In this case digits include single spaces between numbers, dashes, parentheses and number can start with +"
                                 required
                                 placeholder="contact telephone"

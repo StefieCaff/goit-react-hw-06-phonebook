@@ -26,7 +26,6 @@ export const ContactList = () => {
     const contacts = useSelector(getContactInfo);
     const filterValue = useSelector(getFilter);
     const dispatch = useDispatch();
-   
     const handleRemoveContact = contactId => {
         dispatch(removeContact(contactId));
         Notify.success('Success! Contact deleted.')
